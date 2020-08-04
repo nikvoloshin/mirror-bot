@@ -2,7 +2,7 @@
 
 Simple VK chatbot that that mirrors user's text messages.
 
-###Setting up
+### Setting up
 
 Fill in all required properties in `src/main/resoures/application.properties` file.
 

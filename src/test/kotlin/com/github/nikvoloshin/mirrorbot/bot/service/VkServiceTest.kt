@@ -2,6 +2,7 @@ package com.github.nikvoloshin.mirrorbot.bot.service
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.github.nikvoloshin.mirrorbot.bot.BotProperties
+import com.github.nikvoloshin.mirrorbot.bot.RestServiceTest
 import com.github.nikvoloshin.mirrorbot.bot.VkProperties
 import com.github.nikvoloshin.mirrorbot.vk.api.client.VkClient
 import com.github.nikvoloshin.mirrorbot.vk.api.client.exception.VkApiException
@@ -30,7 +31,7 @@ class VkServiceTest(
     @Autowired vkClient: VkClient,
     @Autowired val vkProperties: VkProperties,
     @Autowired val botProperties: BotProperties
-) {
+): RestServiceTest {
     private val server = MockRestServiceServer.createServer(vkClient)
 
     @BeforeEach
@@ -127,16 +128,4 @@ class VkServiceTest(
         assertEquals(errorResponse.code, exception.description.code)
         assertEquals(errorResponse.message, exception.description.message)
     }
-
-    private fun MockRestServiceServer.expectMethod(methodName: String) =
-        expect { assertEquals("/method/$methodName", it.uri.path) }
-
-    private fun ResponseActions.withQueryParameter(name: String, value: String) =
-        andExpect(queryParam(name, UriUtils.encodeQuery(value, StandardCharsets.UTF_8)))
-
-    private fun ResponseActions.respondJson(obj: Any?) =
-        andRespond(withSuccess("{\"response\":${jacksonObjectMapper().writeValueAsString(obj)}}", MediaType.APPLICATION_JSON))
-
-    private fun ResponseActions.respondErrorJson(obj: VkResponse.Error) =
-        andRespond(withSuccess("{\"error\":${jacksonObjectMapper().writeValueAsString(obj)}}", MediaType.APPLICATION_JSON))
 }

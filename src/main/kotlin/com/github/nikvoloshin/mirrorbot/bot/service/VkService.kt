@@ -7,6 +7,7 @@ import com.github.nikvoloshin.mirrorbot.vk.api.client.exception.VkApiException
 import com.github.nikvoloshin.mirrorbot.vk.api.client.executeRequest
 import com.github.nikvoloshin.mirrorbot.vk.api.client.request.VkRequest
 import com.github.nikvoloshin.mirrorbot.vk.api.client.request.method.Groups
+import com.github.nikvoloshin.mirrorbot.vk.api.client.request.method.Messages
 import com.github.nikvoloshin.mirrorbot.vk.api.client.response.CallbackSettings
 import com.github.nikvoloshin.mirrorbot.vk.api.client.response.VkResponse
 import org.springframework.stereotype.Service
@@ -31,6 +32,9 @@ class VkService(
 
     fun setCallbackSettings(serverId: Int, settings: CallbackSettings) =
         vkClient.executeRequest(Groups.setCallbackSettings(vkProperties.groupId, serverId, settings))
+
+    fun sendMessage(userId: Int, message: String) =
+        vkClient.executeRequest(Messages.send(userId, message))
 
     private inline fun <reified R> VkClient.executeRequest(request: VkRequest<R>): R {
         when (val response = executeRequest(request, vkProperties.token, vkProperties.version)) {
